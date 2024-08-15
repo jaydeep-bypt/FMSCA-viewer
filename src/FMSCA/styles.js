@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { DataGridPro } from "@mui/x-data-grid-pro";
-import { Typography, Paper, TextField } from "@mui/material";
+import { Typography, Paper, TextField, Button } from "@mui/material";
 
 export const CustomDataGridPro = styled(DataGridPro)`
   .MuiDataGrid-columnHeader {
@@ -59,4 +59,25 @@ export const StyledTextField = styled(TextField)`
       // border-color: #0056b3;
     }
   }
+`;
+
+export const ToggleButton = styled(Button)`
+  height: 25px !important;
+  width: fit-content;
+  margin-right: 15px !important;
+  background-color: #0287c9 !important;
+  color: #fff !important;
+  &:hover {
+    background-color: #0273ab !important;0273ab
+  }
+`;
+
+export const StyledHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #079ae3;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 16px;
 `;
