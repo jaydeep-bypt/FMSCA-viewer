@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Papa from "papaparse";
 import TableView from "./components/TableView";
 import PivotTable from "./components/PivotTableView";
@@ -14,7 +14,6 @@ const FMSCAViewer = () => {
 
   useEffect(() => {
     setLoading(true);
-
     fetch("/data/FMSCA.csv")
       .then((response) => response.text())
       .then((csvData) => {
@@ -37,13 +36,13 @@ const FMSCAViewer = () => {
       });
   }, []);
 
-  const handleViewSwitch = () => {
+  const handleViewSwitch = useCallback(() => {
     setViewLoading(true);
     setTimeout(() => {
       setView(view === "tableView" ? "pivotTable" : "tableView");
       setViewLoading(false);
-    }, 500);
-  };
+    }, 500); // Adjust the delay as needed
+  }, [view]);
 
   return (
     <StyledPaper>

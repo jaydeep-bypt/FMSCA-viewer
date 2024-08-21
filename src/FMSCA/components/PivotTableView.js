@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import PivotTableUI from "react-pivottable/PivotTableUI";
 import "react-pivottable/pivottable.css";
 import TableRenderers from "react-pivottable/TableRenderers";
@@ -7,6 +7,12 @@ import createPlotlyRenderers from "react-pivottable/PlotlyRenderers";
 import moment from "moment";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
+import debounce from 'lodash.debounce';
+
+// Create debounced function outside of component
+const debouncedHandlePivotChange = debounce((callback) => {
+  callback();
+}, 300);
 
 const PlotlyRenderers = createPlotlyRenderers(Plot);
 
@@ -17,31 +23,32 @@ const PivotTableView = ({ data }) => {
   const renderers = useMemo(() => {
     return {
       ...TableRenderers,
-      ...(PlotlyRenderers || {})
+      ...(PlotlyRenderers || {}),
     };
   }, []);
 
   const transformData = useMemo(() => {
     return data?.map((row) => {
       const transformedRow = { ...row };
-
       if (row.date) {
         transformedRow["Year"] = moment(row.date).format("YYYY");
         transformedRow["Month"] = moment(row.date).format("YYYY-MM");
         transformedRow["Week"] = moment(row.date).format("YYYY-WW");
       }
-
       return transformedRow;
     }) || [];
   }, [data]);
 
-  const handlePivotChange = (s) => {
-    setLoading(true);
-    setTimeout(() => {
-      setPivotState(s);
-      setLoading(false);
-    }, 300);
-  };
+  const handlePivotChange = useCallback(
+    (s) => {
+      setLoading(true);
+      debouncedHandlePivotChange(() => {
+        setPivotState(s);
+        setLoading(false);
+      });
+    },
+    [] // Use empty array since the debounced function does not depend on any variables
+  );
 
   return (
     <div style={{ height: "92vh", width: "100%", overflow: "auto" }}>
